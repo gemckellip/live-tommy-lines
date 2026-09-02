@@ -157,7 +157,6 @@ function renderGame(game) {
       <div class="game-info">
         <div class="game-meta">
           <span class="network">${escapeHtml(game.network)}</span>
-          <span class="game-time">${escapeHtml(kickoff)}</span>
           ${game.neutral ? '<span class="network">• Neutral site</span>' : ""}
           ${game.tiebreaker ? '<span class="tiebreaker-label">Full-score tiebreaker</span>' : ""}
         </div>
@@ -178,6 +177,7 @@ function renderGame(game) {
       </div>
       <div class="game-status-panel">
         <div class="status-line"><i class="status-dot ${statusState === "in" ? "live-dot" : statusState === "post" ? "final-dot" : "upcoming-dot"}"></i>${escapeHtml(statusText)}</div>
+        <div class="game-time status-time">${escapeHtml(kickoff)}</div>
         <div class="status-detail">Listed line: ${escapeHtml(game.away)} ${escapeHtml(lines.away)}${game.tiebreaker ? "<br />Enter the predicted final score below." : ""}</div>
         ${score?.link ? `<a class="event-link" href="${escapeHtml(score.link)}" target="_blank" rel="noreferrer">Open ESPN game ↗</a>` : ""}
       </div>
