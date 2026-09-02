@@ -145,7 +145,9 @@ function renderGame(game) {
   const lines = gameLine(game);
   const statusState = score?.state || "unknown";
   const statusClass = statusState === "in" ? "live" : statusState === "post" ? "final" : "upcoming";
-  const statusText = score?.shortDetail || (statusState === "unknown" ? "No score found" : "Scheduled");
+  const statusText = statusState === "pre"
+    ? "Upcoming"
+    : score?.shortDetail || (statusState === "unknown" ? "No score found" : "Scheduled");
   const awayScore = score?.awayScore ?? "—";
   const homeScore = score?.homeScore ?? "—";
   const result = calculateResult(game, score, pick);
