@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101b2d" />
+    <title>Live Tommy Lines</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">2026 College Football Pick Em</p>
+          <h1>Live Tommy Lines</h1>
+        </div>
+        <div class="hero-badge" aria-label="Games on board">
+          <span class="hero-badge-number" id="hero-game-count">15</span>
+          <span class="hero-badge-label">games</span>
+        </div>
+      </header>
+
+      <section class="controls-panel" aria-label="Scoreboard controls">
+        <div class="control-group">
+          <label for="score-date">Scoreboard date</label>
+          <input id="score-date" type="date" value="2025-09-06" />
+          <span class="help-text">This 2026 opening-week slate runs September 3–7. The app searches the surrounding three days automatically.</span>
+        </div>
+        <div class="control-actions">
+          <label class="toggle">
+            <input id="auto-refresh" type="checkbox" checked />
+            <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
+            <span>Auto-refresh every 30 seconds</span>
+          </label>
+          <button id="refresh-button" class="primary-button" type="button">
+            <span class="refresh-icon" aria-hidden="true">↻</span>
+            Refresh scores
+          </button>
+        </div>
+      </section>
+
+      <section class="summary-grid" aria-label="Pick summary">
+        <article class="summary-card">
+          <span class="summary-label">Picks entered</span>
+          <strong id="picks-entered">0 / 15</strong>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">ATS record</span>
+          <strong id="ats-record">—</strong>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">Games live</span>
+          <strong id="live-count">0</strong>
+        </article>
+        <article class="summary-card summary-card-accent">
+          <span class="summary-label">Last updated</span>
+          <strong id="last-updated">Not yet</strong>
+        </article>
+      </section>
+
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Your weekly slate</p>
+          <h2>Games &amp; lines</h2>
+        </div>
+        <div class="status-key" aria-label="Status key">
+          <span><i class="status-dot live-dot"></i>Live</span>
+          <span><i class="status-dot final-dot"></i>Final</span>
+          <span><i class="status-dot upcoming-dot"></i>Upcoming</span>
+        </div>
+      </div>
+
+      <div id="message" class="message" role="status" aria-live="polite"></div>
+      <section id="game-list" class="game-list" aria-label="College football games"></section>
+
+      <footer class="footer-note">
+        <span>Scores: ESPN college football scoreboard</span>
+        <span>Lines and picks stay saved in this browser</span>
+      </footer>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
