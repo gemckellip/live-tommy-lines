@@ -167,7 +167,11 @@ button, input, select { font: inherit; }
 .game-status-panel { align-self: stretch; display: flex; flex-direction: column; justify-content: center; padding: 0 22px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
 .status-line { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; font-size: .82rem; font-weight: 850; }
 .status-line .status-dot { width: 9px; height: 9px; }
+.line-comparison { display: grid; gap: 7px; color: var(--muted); font-size: .8rem; line-height: 1.35; }
+.market-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.market-line strong { color: var(--ink); text-align: right; font-weight: 850; }
 .status-detail { color: var(--muted); font-size: .8rem; line-height: 1.4; }
+.tiebreaker-prompt { margin-top: 8px; }
 .event-link { display: inline-block; margin-top: 9px; color: var(--blue); font-size: .75rem; font-weight: 750; text-decoration: none; }
 .event-link:hover { text-decoration: underline; }
 

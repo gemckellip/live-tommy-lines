@@ -1,23 +1,23 @@
 const GAMES = [
-  { id: "colorado-georgia-tech", away: "Colorado", home: "Georgia Tech", spread: 8.5, network: "ESPN" },
-  { id: "miami-stanford", away: "Miami", home: "Stanford", spread: -28.5, network: "ESPN" },
-  { id: "fresno-usc", away: "Fresno State", home: "USC", spread: 21.5, network: "FOX" },
-  { id: "ecu-alabama", away: "East Carolina", home: "Alabama", spread: 29.5, network: "ABC" },
-  { id: "coastal-west-virginia", away: "Coastal Carolina", home: "West Virginia", spread: 20.5, network: "TNT" },
-  { id: "baylor-auburn", away: "Baylor", home: "Auburn", spread: 5.5, network: "ABC (The Benz)", neutral: true },
-  { id: "boise-oregon", away: "Boise State", home: "Oregon", spread: 25.5, network: "CBS" },
-  { id: "bc-cincinnati", away: "Boston College", home: "Cincinnati", spread: 10.5, network: "FOX" },
-  { id: "tulane-duke", away: "Tulane", home: "Duke", spread: 7.5, network: "ACC Network" },
-  { id: "clemson-lsu", away: "Clemson", home: "LSU", spread: 13.5, network: "ABC", tiebreaker: true },
-  { id: "ucla-cal", away: "UCLA", home: "Cal", spread: -1.5, network: "ESPN" },
-  { id: "washington-state-washington", away: "Washington State", home: "Washington", spread: 24.5, network: "NBC" },
-  { id: "wisconsin-notre-dame", away: "Wisconsin", home: "Notre Dame", spread: 23.5, network: "NBC (Lambeau)", neutral: true },
-  { id: "louisville-ole-miss", away: "Louisville", home: "Ole Miss", spread: 7.5, network: "ABC (Nashville)", neutral: true },
-  { id: "smu-florida-state", away: "SMU", home: "Florida State", spread: -4.5, network: "ESPN" },
+  { id: "rutgers-boston-college", away: "Rutgers", home: "Boston College", spread: 5.5, network: "ESPN2" },
+  { id: "missouri-kansas", away: "Missouri", home: "Kansas", spread: -4.5, network: "FOX" },
+  { id: "arizona-state-texas-am", away: "Arizona State", home: "Texas A&M", spread: 16.5, network: "ABC" },
+  { id: "oklahoma-michigan", away: "Oklahoma", home: "Michigan", spread: -9.5, network: "FOX" },
+  { id: "wake-forest-purdue", away: "Wake Forest", home: "Purdue", spread: -3.5, network: "FS1" },
+  { id: "alabama-kentucky", away: "Alabama", home: "Kentucky", spread: -13.5, network: "ABC" },
+  { id: "arizona-byu", away: "Arizona", home: "BYU", spread: 8.5, network: "FOX" },
+  { id: "ucf-pitt", away: "UCF", home: "Pitt", spread: 7.5, network: "ESPN2" },
+  { id: "duke-illinois", away: "Duke", home: "Illinois", spread: 4.5, network: "FS1" },
+  { id: "memphis-boise-state", away: "Memphis", home: "Boise State", spread: 6.5, network: "USA" },
+  { id: "tennessee-georgia-tech", away: "Tennessee", home: "Georgia Tech", spread: -13.5, network: "ESPN" },
+  { id: "ohio-state-texas", away: "Ohio State", home: "Texas", spread: 0, network: "ABC" },
+  { id: "louisiana-tech-lsu", away: "Louisiana Tech", home: "LSU", spread: 39.5, network: "SEC Network", tiebreaker: true },
+  { id: "iowa-state-iowa", away: "Iowa State", home: "Iowa", spread: 14.5, network: "NBC" },
+  { id: "arkansas-utah", away: "Arkansas", home: "Utah", spread: 14.5, network: "ESPN" },
 ];
 
-const STORAGE_KEY = "college-football-picks-v1";
-const DEFAULT_DATE = "2026-09-05";
+const STORAGE_KEY = "college-football-picks-week-2-2026-v1";
+const DEFAULT_DATE = "2026-09-12";
 const state = {
   scores: new Map(),
   picks: loadSavedPicks(),
@@ -63,6 +63,7 @@ function escapeHtml(value) {
 }
 
 function formatSpread(value) {
+  if (value === 0) return "PK";
   return `${value > 0 ? "+" : ""}${value}`;
 }
 
@@ -72,7 +73,7 @@ function formatTime(value) {
 }
 
 function formatGameDateTime(value) {
-  if (!value) return "Kickoff time loads after refresh";
+  if (!value) return "Time not posted";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Kickoff time unavailable";
   const format = (timeZone, zone) => `${new Intl.DateTimeFormat("en-US", {
@@ -153,6 +154,7 @@ function renderGame(game) {
   const result = calculateResult(game, score, pick);
   const tiebreakerScore = game.tiebreaker ? renderTiebreaker(game, score, pick) : "";
   const kickoff = formatGameDateTime(score?.eventDate);
+  const vegasLine = score?.vegasLine || "Not posted yet";
 
   return `
     <article class="game-card ${statusClass} ${game.tiebreaker ? "tiebreaker" : ""}" data-game-id="${game.id}">
@@ -180,7 +182,11 @@ function renderGame(game) {
       <div class="game-status-panel">
         <div class="status-line"><i class="status-dot ${statusState === "in" ? "live-dot" : statusState === "post" ? "final-dot" : "upcoming-dot"}"></i>${escapeHtml(statusText)}</div>
         <div class="game-time status-time">${escapeHtml(kickoff)}</div>
-        <div class="status-detail">Listed line: ${escapeHtml(game.away)} ${escapeHtml(lines.away)}${game.tiebreaker ? "<br />Enter the predicted final score below." : ""}</div>
+        <div class="line-comparison">
+          <div class="market-line"><span>Tommy line</span><strong>${escapeHtml(game.away)} ${escapeHtml(lines.away)}</strong></div>
+          <div class="market-line"><span>Vegas line (ESPN)</span><strong>${escapeHtml(vegasLine)}</strong></div>
+        </div>
+        ${game.tiebreaker ? '<div class="status-detail tiebreaker-prompt">Enter the predicted final score below.</div>' : ""}
         ${score?.link ? `<a class="event-link" href="${escapeHtml(score.link)}" target="_blank" rel="noreferrer">Open ESPN game ↗</a>` : ""}
       </div>
       <div class="pick-panel">
@@ -290,10 +296,12 @@ async function fetchScoreboard(dateString) {
       return awayIndex >= 0 && homeIndex >= 0 && awayIndex !== homeIndex;
     });
     if (!event) return matches;
-    const competitors = event.competitions[0].competitors;
+    const competition = event.competitions?.[0] || {};
+    const competitors = competition.competitors || [];
     const away = competitors[findTeamIndex(game.away, competitors)];
     const home = competitors[findTeamIndex(game.home, competitors)];
     const type = event.status?.type || {};
+    const odds = competition.odds?.[0] || {};
     matches.set(game.id, {
       state: type.state || "pre",
       shortDetail: type.shortDetail || type.detail || "Scheduled",
@@ -301,6 +309,7 @@ async function fetchScoreboard(dateString) {
       homeScore: parseScore(home?.score),
       link: event.links?.[0]?.href || "",
       eventDate: event.date,
+      vegasLine: String(odds.details || "").trim(),
     });
     return matches;
   }, new Map());
