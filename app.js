@@ -67,6 +67,22 @@ function formatSpread(value) {
   return `${value > 0 ? "+" : ""}${value}`;
 }
 
+function formatVegasLine(game, details) {
+  const raw = String(details || "").trim();
+  if (!raw) return "Not posted yet";
+  const spreadMatch = raw.match(/[+-]?\d+(?:\.\d+)?/);
+  if (!spreadMatch) return raw;
+
+  const spread = Number(spreadMatch[0]);
+  if (teamMatches(game.away, raw) && !teamMatches(game.home, raw)) {
+    return `${game.home} ${formatSpread(-spread)}`;
+  }
+  if (teamMatches(game.home, raw) && !teamMatches(game.away, raw)) {
+    return `${game.home} ${formatSpread(spread)}`;
+  }
+  return raw;
+}
+
 function formatTime(value) {
   if (!value) return "Not yet";
   return new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(value);
@@ -76,14 +92,19 @@ function formatGameDateTime(value) {
   if (!value) return "Time not posted";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Kickoff time unavailable";
-  const format = (timeZone, zone) => `${new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone,
-  }).format(date)} ${zone}`;
-  return `${format("America/New_York", "ET")} · ${format("America/Chicago", "CT")}`;
+  const format = (timeZone, zone) => {
+    const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+      timeZone,
+    }).formatToParts(date).filter(({ type }) => type !== "literal").map(({ type, value: part }) => [type, part]));
+    const minutes = parts.minute === "00" ? "" : `:${parts.minute}`;
+    return `${parts.month} ${parts.day} ${parts.hour}${minutes} ${zone}`;
+  };
+  return `${format("America/New_York", "ET")} / ${format("America/Chicago", "CT")}`;
 }
 
 function formatMargin(value) {
@@ -154,7 +175,7 @@ function renderGame(game) {
   const result = calculateResult(game, score, pick);
   const tiebreakerScore = game.tiebreaker ? renderTiebreaker(game, score, pick) : "";
   const kickoff = formatGameDateTime(score?.eventDate);
-  const vegasLine = score?.vegasLine || "Not posted yet";
+  const vegasLine = formatVegasLine(game, score?.vegasLine);
 
   return `
     <article class="game-card ${statusClass} ${game.tiebreaker ? "tiebreaker" : ""}" data-game-id="${game.id}">
