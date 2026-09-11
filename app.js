@@ -67,20 +67,23 @@ function formatSpread(value) {
   return `${value > 0 ? "+" : ""}${value}`;
 }
 
-function formatVegasLine(game, details) {
-  const raw = String(details || "").trim();
+function formatVegasLine(game, score) {
+  const raw = String(score?.vegasLine || "").trim();
   if (!raw) return "Not posted yet";
   const spreadMatch = raw.match(/[+-]?\d+(?:\.\d+)?/);
   if (!spreadMatch) return raw;
 
-  const spread = Number(spreadMatch[0]);
-  if (teamMatches(game.away, raw) && !teamMatches(game.home, raw)) {
-    return `${game.home} ${formatSpread(-spread)}`;
-  }
-  if (teamMatches(game.home, raw) && !teamMatches(game.away, raw)) {
-    return `${game.home} ${formatSpread(spread)}`;
-  }
-  return raw;
+  const rawSpread = Number.isFinite(score?.vegasSpread) ? score.vegasSpread : Number(spreadMatch[0]);
+  const magnitude = Math.abs(rawSpread);
+  const homeFavorite = score?.vegasHomeFavorite;
+  const awaySpread = homeFavorite === true || (homeFavorite == null && game.spread > 0)
+    ? magnitude
+    : homeFavorite === false || (homeFavorite == null && game.spread < 0)
+      ? -magnitude
+      : teamMatches(game.home, raw) && !teamMatches(game.away, raw)
+        ? -Number(spreadMatch[0])
+        : Number(spreadMatch[0]);
+  return `${game.away} ${formatSpread(awaySpread)}`;
 }
 
 function formatTime(value) {
@@ -92,19 +95,22 @@ function formatGameDateTime(value) {
   if (!value) return "Time not posted";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Kickoff time unavailable";
-  const format = (timeZone, zone) => {
+  const formatDate = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "America/New_York",
+  }).format(date);
+  const formatTime = (timeZone, zone) => {
     const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
       hour: "numeric",
       minute: "2-digit",
       hour12: true,
       timeZone,
     }).formatToParts(date).filter(({ type }) => type !== "literal").map(({ type, value: part }) => [type, part]));
     const minutes = parts.minute === "00" ? "" : `:${parts.minute}`;
-    return `${parts.month} ${parts.day} ${parts.hour}${minutes} ${zone}`;
+    return `${parts.hour}${minutes} ${zone}`;
   };
-  return `${format("America/New_York", "ET")} / ${format("America/Chicago", "CT")}`;
+  return `${formatDate} ${formatTime("America/New_York", "ET")} / ${formatTime("America/Chicago", "CT")}`;
 }
 
 function formatMargin(value) {
@@ -121,7 +127,8 @@ const aliases = {
   USC: ["Southern California", "USC Trojans"],
   Cal: ["California", "California Golden Bears"],
   "East Carolina": ["East Carolina Pirates"],
-  "Boston College": ["Boston College Eagles"],
+  "Boston College": ["Boston College Eagles", "BC"],
+  Pitt: ["Pittsburgh", "Pittsburgh Panthers"],
   "Ole Miss": ["Mississippi", "Ole Miss Rebels"],
   SMU: ["Southern Methodist", "SMU Mustangs"],
 };
@@ -175,7 +182,7 @@ function renderGame(game) {
   const result = calculateResult(game, score, pick);
   const tiebreakerScore = game.tiebreaker ? renderTiebreaker(game, score, pick) : "";
   const kickoff = formatGameDateTime(score?.eventDate);
-  const vegasLine = formatVegasLine(game, score?.vegasLine);
+  const vegasLine = formatVegasLine(game, score);
 
   return `
     <article class="game-card ${statusClass} ${game.tiebreaker ? "tiebreaker" : ""}" data-game-id="${game.id}">
@@ -331,6 +338,8 @@ async function fetchScoreboard(dateString) {
       link: event.links?.[0]?.href || "",
       eventDate: event.date,
       vegasLine: String(odds.details || "").trim(),
+      vegasSpread: Number.isFinite(Number(odds.spread)) ? Number(odds.spread) : null,
+      vegasHomeFavorite: typeof odds.homeTeamOdds?.favorite === "boolean" ? odds.homeTeamOdds.favorite : null,
     });
     return matches;
   }, new Map());
