@@ -18,6 +18,6 @@ The app uses ESPN's public college-football scoreboard endpoint for live scores 
 
 ## Included slate
 
-The 15 games from the supplied screenshot are preloaded. Picks are intentionally blank. The Louisiana Tech–LSU game is marked as the weekly full-score tiebreaker and has fields for a predicted final score. The default date is September 12, 2026, and the score search covers three days before and after the selected date so the September 11–12 slate is included.
+The 15 games from the supplied screenshot are preloaded. Picks are intentionally blank. The LSU–Ole Miss game is marked as the weekly full-score tiebreaker and has fields for a predicted final score. The default date is September 19, 2026, and the score search covers three days before and after the selected date so the September 18–19 slate is included.
 
 Lines are entered as the Tommy line for the first-listed team. The app automatically displays the corresponding line for the second team, keeps ESPN's Vegas spread value, and shows that Vegas value using the away team—the same school shown for the Tommy line—while calculating live/final ATS status.

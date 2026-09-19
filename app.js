@@ -1,27 +1,28 @@
 const GAMES = [
-  { id: "rutgers-boston-college", away: "Rutgers", home: "Boston College", spread: 5.5, network: "ESPN2" },
-  { id: "missouri-kansas", away: "Missouri", home: "Kansas", spread: -4.5, network: "FOX" },
-  { id: "arizona-state-texas-am", away: "Arizona State", home: "Texas A&M", spread: 16.5, network: "ABC" },
-  { id: "oklahoma-michigan", away: "Oklahoma", home: "Michigan", spread: -9.5, network: "FOX" },
-  { id: "wake-forest-purdue", away: "Wake Forest", home: "Purdue", spread: -3.5, network: "FS1" },
-  { id: "alabama-kentucky", away: "Alabama", home: "Kentucky", spread: -13.5, network: "ABC" },
-  { id: "arizona-byu", away: "Arizona", home: "BYU", spread: 8.5, network: "FOX" },
-  { id: "ucf-pitt", away: "UCF", home: "Pitt", spread: 7.5, network: "ESPN2" },
-  { id: "duke-illinois", away: "Duke", home: "Illinois", spread: 4.5, network: "FS1" },
-  { id: "memphis-boise-state", away: "Memphis", home: "Boise State", spread: 6.5, network: "USA" },
-  { id: "tennessee-georgia-tech", away: "Tennessee", home: "Georgia Tech", spread: -13.5, network: "ESPN" },
-  { id: "ohio-state-texas", away: "Ohio State", home: "Texas", spread: 0, network: "ABC" },
-  { id: "louisiana-tech-lsu", away: "Louisiana Tech", home: "LSU", spread: 39.5, network: "SEC Network", tiebreaker: true },
-  { id: "iowa-state-iowa", away: "Iowa State", home: "Iowa", spread: 14.5, network: "NBC" },
-  { id: "arkansas-utah", away: "Arkansas", home: "Utah", spread: 14.5, network: "ESPN" },
+  { id: "miami-wake-forest", away: "Miami", home: "Wake Forest", spread: -24.5, network: "ESPN" },
+  { id: "houston-texas-tech", away: "Houston", home: "Texas Tech", spread: 10.5, network: "FOX" },
+  { id: "uga-arkansas", away: "UGA", home: "Arkansas", spread: -27.5, network: "ABC" },
+  { id: "arizona-state-kansas", away: "Arizona State", home: "Kansas", spread: 5.5, network: "FS1", neutral: true, venue: "Wembley Stadium" },
+  { id: "unc-clemson", away: "UNC", home: "Clemson", spread: 2.5, network: "ESPN" },
+  { id: "florida-state-alabama", away: "Florida State", home: "Alabama", spread: 22.5, network: "ABC" },
+  { id: "smu-louisville", away: "SMU", home: "Louisville", spread: 3.5, network: "ESPN2" },
+  { id: "mississippi-state-south-carolina", away: "Mississippi State", home: "South Carolina", spread: 12.5, network: "SEC Network" },
+  { id: "florida-auburn", away: "Florida", home: "Auburn", spread: -4.5, network: "ESPN" },
+  { id: "michigan-state-notre-dame", away: "Michigan State", home: "Notre Dame", spread: 29.5, network: "NBC" },
+  { id: "lsu-ole-miss", away: "LSU", home: "Ole Miss", spread: -6.5, network: "ABC", tiebreaker: true },
+  { id: "byu-colorado-state", away: "BYU", home: "Colorado St", spread: -20.5, network: "CBS" },
+  { id: "virginia-tech-maryland", away: "Virginia Tech", home: "Maryland", spread: -3.5, network: "FS1" },
+  { id: "west-virginia-virginia", away: "West Virginia", home: "Virginia", spread: 10.5, network: "ACC Network", neutral: true, venue: "Charlotte" },
+  { id: "purdue-ucla", away: "Purdue", home: "UCLA", spread: 16.5, network: "Big Ten Network" },
 ];
 
-const STORAGE_KEY = "college-football-picks-week-2-2026-v1";
-const DEFAULT_DATE = "2026-09-12";
+const STORAGE_KEY = "college-football-picks-week-3-2026-v1";
+const DATE_STORAGE_KEY = "college-football-date-week-3-2026";
+const DEFAULT_DATE = "2026-09-19";
 const state = {
   scores: new Map(),
   picks: loadSavedPicks(),
-  date: localStorage.getItem("college-football-date") || DEFAULT_DATE,
+  date: localStorage.getItem(DATE_STORAGE_KEY) || DEFAULT_DATE,
   refreshing: false,
 };
 
@@ -124,11 +125,14 @@ function normalize(value) {
 
 const aliases = {
   Miami: ["Miami Hurricanes", "Miami (FL)"],
+  UGA: ["Georgia", "Georgia Bulldogs"],
+  UNC: ["North Carolina", "North Carolina Tar Heels"],
   USC: ["Southern California", "USC Trojans"],
   Cal: ["California", "California Golden Bears"],
   "East Carolina": ["East Carolina Pirates"],
   "Boston College": ["Boston College Eagles", "BC"],
   Pitt: ["Pittsburgh", "Pittsburgh Panthers"],
+  "Colorado St": ["Colorado State", "Colorado State Rams"],
   "Ole Miss": ["Mississippi", "Ole Miss Rebels"],
   SMU: ["Southern Methodist", "SMU Mustangs"],
 };
@@ -189,7 +193,7 @@ function renderGame(game) {
       <div class="game-info">
         <div class="game-meta">
           <span class="network">${escapeHtml(game.network)}</span>
-          ${game.neutral ? '<span class="network">• Neutral site</span>' : ""}
+          ${game.neutral ? `<span class="network">• Neutral site${game.venue ? ` · ${escapeHtml(game.venue)}` : ""}</span>` : ""}
           ${game.tiebreaker ? '<span class="tiebreaker-label">Full-score tiebreaker</span>' : ""}
         </div>
         <div class="teams">
@@ -372,7 +376,7 @@ async function refreshScores() {
 
 elements.date.addEventListener("change", () => {
   state.date = elements.date.value || DEFAULT_DATE;
-  localStorage.setItem("college-football-date", state.date);
+  localStorage.setItem(DATE_STORAGE_KEY, state.date);
   state.scores = new Map();
   renderGames();
   refreshScores();
