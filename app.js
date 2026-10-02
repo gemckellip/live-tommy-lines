@@ -1,24 +1,24 @@
 const GAMES = [
-  { id: "northwestern-indiana", away: "Northwestern", home: "Indiana", spread: 23.5, network: "FOX" },
-  { id: "clemson-cal", away: "Clemson", home: "Cal", spread: -2.5, network: "ESPN" },
-  { id: "texas-tennessee", away: "Texas", home: "Tennessee", spread: -6.5, network: "ABC" },
-  { id: "virginia-tech-boston-college", away: "Virginia Tech", home: "Boston College", spread: -17.5, network: "ACC Network" },
-  { id: "notre-dame-purdue", away: "Notre Dame", home: "Purdue", spread: -27.5, network: "Peacock" },
-  { id: "oklahoma-georgia", away: "Oklahoma", home: "Georgia", spread: 16.5, network: "ESPN" },
-  { id: "ole-miss-florida", away: "Ole Miss", home: "Florida", spread: -1.5, network: "ABC" },
-  { id: "utah-iowa-state", away: "Utah", home: "Iowa State", spread: -9.5, network: "FOX" },
-  { id: "iowa-michigan", away: "Iowa", home: "Michigan", spread: 3.5, network: "CBS" },
-  { id: "boise-state-western-michigan", away: "Boise State", home: "Western Michigan", spread: -7.5, network: "ESPN2" },
-  { id: "kansas-state-cincinnati", away: "Kansas State", home: "Cincinnati", spread: -5.5, network: "ESPN2" },
-  { id: "texas-am-lsu", away: "Texas A&M", home: "LSU", spread: 10.5, network: "ABC", tiebreaker: true },
-  { id: "oregon-usc", away: "Oregon", home: "USC", spread: -2.5, network: "CBS" },
-  { id: "mizzou-mississippi-state", away: "Mizzou", home: "Mississippi State", spread: 6.5, network: "SEC Network" },
-  { id: "georgia-tech-stanford", away: "Georgia Tech", home: "Stanford", spread: -10.5, network: "ESPN" },
+  { id: "pitt-virginia-tech", away: "Pitt", home: "Virginia Tech", spread: 4.5, network: "ESPN" },
+  { id: "penn-state-northwestern", away: "Penn State", home: "Northwestern", spread: -3.5, network: "FOX" },
+  { id: "notre-dame-north-carolina", away: "Notre Dame", home: "North Carolina", spread: -25.5, network: "ESPN" },
+  { id: "alabama-mississippi-state", away: "Alabama", home: "Mississippi State", spread: -4.5, network: "ABC" },
+  { id: "ucf-houston", away: "UCF", home: "Houston", spread: 11.5, network: "ESPN2" },
+  { id: "navy-air-force", away: "Navy", home: "Air Force", spread: 0, network: "CBS" },
+  { id: "michigan-minnesota", away: "Michigan", home: "Minnesota", spread: -6.5, network: "FOX" },
+  { id: "ohio-state-iowa", away: "Ohio State", home: "Iowa", spread: -12.5, network: "CBS" },
+  { id: "florida-missouri", away: "Florida", home: "Missouri", spread: -10.5, network: "ABC" },
+  { id: "auburn-tennessee", away: "Auburn", home: "Tennessee", spread: 7.5, network: "ESPN" },
+  { id: "byu-tcu", away: "BYU", home: "TCU", spread: -8.5, network: "ESPN" },
+  { id: "miami-clemson", away: "Miami", home: "Clemson", spread: -17.5, network: "ABC" },
+  { id: "mcneese-state-lsu", away: "McNeese State", home: "LSU", spread: 51.5, network: "SEC Network", tiebreaker: true },
+  { id: "cincinnati-arizona", away: "Cincinnati", home: "Arizona", spread: 6.5, network: "FOX" },
+  { id: "san-jose-state-hawaii", away: "San Jose State", home: "Hawaii", spread: 4.5, network: "MW+" },
 ];
 
-const STORAGE_KEY = "college-football-picks-week-4-2026-v1";
-const DATE_STORAGE_KEY = "college-football-date-week-4-2026";
-const DEFAULT_DATE = "2026-09-26";
+const STORAGE_KEY = "college-football-picks-week-5-2026-v1";
+const DATE_STORAGE_KEY = "college-football-date-week-5-2026";
+const DEFAULT_DATE = "2026-10-03";
 const state = {
   scores: new Map(),
   picks: loadSavedPicks(),
@@ -120,7 +120,7 @@ function formatMargin(value) {
 }
 
 function normalize(value) {
-  return String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
 const aliases = {
@@ -136,18 +136,29 @@ const aliases = {
   "Colorado St": ["Colorado State", "Colorado State Rams"],
   "Ole Miss": ["Mississippi", "Ole Miss Rebels"],
   SMU: ["Southern Methodist", "SMU Mustangs"],
+  "McNeese State": ["McNeese", "McNeese Cowboys", "McNeese State Cowboys"],
+  Hawaii: ["Hawai'i", "Hawai'i Rainbow Warriors", "Hawaii Rainbow Warriors"],
+  Washington: ["Washington Huskies"],
+  "Washington State": ["Washington State Cougars"],
 };
 
 const seedTeamNames = [...new Set(GAMES.flatMap((game) => [game.away, game.home]))];
 
 function teamMatches(expected, actual) {
   const actualName = normalize(actual);
-  const candidates = [expected, ...(aliases[expected] || [])].map(normalize);
+  if (!actualName) return false;
+  const expectedName = normalize(expected);
+  const aliasGroups = Object.entries(aliases).map(([name, names]) => [name, ...names].map(normalize));
+  const candidates = [...new Set([
+    expectedName,
+    ...aliasGroups.filter((names) => names.includes(expectedName)).flat(),
+  ])].filter(Boolean);
+  const otherTeams = [...seedTeamNames.map(normalize), ...aliasGroups.flat()]
+    .filter((name) => !candidates.includes(name));
   return candidates.some((candidate) => {
     if (actualName === candidate) return true;
-    const longerTeamPrefix = [...seedTeamNames, ...Object.values(aliases).flat()]
-      .map(normalize)
-      .some((other) => other !== candidate && other.startsWith(candidate) && actualName.startsWith(other));
+    const longerTeamPrefix = otherTeams
+      .some((other) => other.startsWith(candidate) && actualName.startsWith(other));
     return !longerTeamPrefix && (actualName.includes(candidate) || candidate.includes(actualName));
   });
 }
