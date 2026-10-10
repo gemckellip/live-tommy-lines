@@ -1,10 +1,9 @@
 @echo off
 setlocal EnableExtensions
 cd /d "%~dp0"
-set "PORT=8000"
 
 echo.
-echo Starting College Football Picks...
+echo Starting Live Tommy Lines for the week of October 10...
 echo Keep this window open while using the app.
 echo.
 
@@ -19,17 +18,16 @@ echo Install Python from https://www.python.org/downloads/ and try again.
 goto failed
 
 :use_py
-py -m http.server %PORT%
+py "%~dp0start-app.py"
 goto server_stopped
 
 :use_python
-python -m http.server %PORT%
+python "%~dp0start-app.py"
 goto server_stopped
 
 :server_stopped
 echo.
-echo The local server stopped. If the app did not open, visit:
-echo http://localhost:%PORT%
+echo The local server stopped.
 goto failed
 
 :failed

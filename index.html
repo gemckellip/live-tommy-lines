@@ -4,8 +4,230 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#101b2d" />
+    <meta name="app-build" content="2026-10-10-r2" />
     <title>Live Tommy Lines</title>
-    <link rel="stylesheet" href="styles.css?v=20261003" />
+    <style id="app-styles">
+:root {
+  --ink: #132238;
+  --muted: #68778c;
+  --soft: #f4f7fb;
+  --line: #e4eaf2;
+  --navy: #101b2d;
+  --blue: #2f6fed;
+  --blue-soft: #eaf1ff;
+  --orange: #f28c28;
+  --green: #1f9d6a;
+  --green-soft: #e8f8f0;
+  --red: #d95757;
+  --red-soft: #fff0f0;
+  --yellow: #b98116;
+  --yellow-soft: #fff7df;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: #eef3f9;
+}
+
+button, input, select { font: inherit; }
+
+.app-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 46px 0 34px;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+  color: white;
+  background: linear-gradient(135deg, #101b2d 0%, #1d3557 100%);
+  border-radius: 24px;
+  padding: 34px 38px 32px;
+  box-shadow: 0 18px 48px rgba(16, 27, 45, .18);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--orange);
+  font-size: .73rem;
+  font-weight: 800;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.hero h1, h2 { margin: 0; letter-spacing: -.035em; }
+.hero h1 { font-size: clamp(2.1rem, 5vw, 4rem); line-height: .98; }
+.hero-copy { margin: 14px 0 0; color: #c3cfdf; font-size: 1.03rem; }
+
+.hero-badge {
+  display: grid;
+  min-width: 96px;
+  padding: 16px 18px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 18px;
+  background: rgba(255,255,255,.09);
+}
+
+.hero-badge-number { font-size: 2rem; font-weight: 850; line-height: 1; }
+.hero-badge-label { margin-top: 6px; color: #c3cfdf; font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; }
+
+.controls-panel {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 26px;
+  margin-bottom: 18px;
+  padding: 19px 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: white;
+}
+
+.control-group { display: grid; gap: 7px; min-width: min(100%, 380px); }
+.control-group label { font-size: .76rem; font-weight: 800; color: var(--ink); text-transform: uppercase; letter-spacing: .08em; }
+.control-group input[type="date"] {
+  width: 180px;
+  padding: 9px 11px;
+  border: 1px solid #cbd5e3;
+  border-radius: 9px;
+  color: var(--ink);
+  background: white;
+}
+.help-text { color: var(--muted); font-size: .79rem; line-height: 1.45; }
+.control-actions { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; justify-content: flex-end; }
+.toggle { display: inline-flex; align-items: center; gap: 9px; color: var(--muted); font-size: .82rem; cursor: pointer; }
+.toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.toggle-track { display: inline-flex; align-items: center; width: 34px; height: 20px; padding: 3px; border-radius: 999px; background: #b7c1ce; transition: background .2s ease; }
+.toggle-thumb { width: 14px; height: 14px; border-radius: 50%; background: white; transition: transform .2s ease; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.toggle input:checked + .toggle-track { background: var(--blue); }
+.toggle input:checked + .toggle-track .toggle-thumb { transform: translateX(14px); }
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  color: white;
+  border: 0;
+  border-radius: 9px;
+  background: var(--blue);
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease;
+}
+.primary-button:hover { background: #215bd0; transform: translateY(-1px); }
+.primary-button:disabled { cursor: wait; opacity: .7; transform: none; }
+.refresh-icon { font-size: 1.2rem; line-height: .8; }
+
+.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 36px; }
+.summary-card { min-height: 98px; padding: 17px 19px; border: 1px solid var(--line); border-radius: 16px; background: white; }
+.summary-card-accent { border-color: #f5d2a9; background: #fffaf4; }
+.summary-label { display: block; margin-bottom: 10px; color: var(--muted); font-size: .73rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.summary-card strong { font-size: 1.75rem; letter-spacing: -.04em; }
+
+.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 14px; }
+.section-heading h2 { font-size: 2rem; }
+.status-key { display: flex; gap: 15px; color: var(--muted); font-size: .78rem; }
+.status-key span { display: inline-flex; align-items: center; gap: 6px; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.live-dot { background: var(--green); box-shadow: 0 0 0 4px var(--green-soft); }
+.final-dot { background: var(--blue); box-shadow: 0 0 0 4px var(--blue-soft); }
+.upcoming-dot { background: #98a5b5; box-shadow: 0 0 0 4px #f0f3f7; }
+
+.message { min-height: 0; margin: 0 0 12px; color: var(--muted); font-size: .86rem; }
+.message:empty { display: none; }
+.message.error { padding: 11px 14px; color: #8e3030; border: 1px solid #f4caca; border-radius: 10px; background: var(--red-soft); }
+
+.game-list { display: grid; gap: 12px; }
+.game-card {
+  display: grid;
+  grid-template-columns: minmax(210px, 1.35fr) minmax(185px, .85fr) minmax(250px, 1.05fr);
+  align-items: center;
+  gap: 22px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 5px 16px rgba(33, 53, 82, .035);
+}
+.game-card.tiebreaker { border-color: #f1ce9f; box-shadow: 0 0 0 2px rgba(242,140,40,.08); }
+.game-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.network { color: var(--muted); font-size: .75rem; font-weight: 700; }
+.game-time { color: var(--ink); font-size: .75rem; font-weight: 800; }
+.status-time { margin-bottom: 7px; }
+.tiebreaker-label { padding: 4px 7px; color: #925a00; border-radius: 5px; background: #fff1d4; font-size: .65rem; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
+.teams { display: grid; gap: 10px; }
+.team-row { display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 12px; }
+.team-name { font-size: 1rem; font-weight: 750; }
+.team-role { color: #94a1b1; font-size: .7rem; text-transform: uppercase; letter-spacing: .07em; }
+.team-score { min-width: 30px; text-align: right; font-size: 1.5rem; font-weight: 850; letter-spacing: -.04em; }
+.team-line { min-width: 48px; color: var(--muted); text-align: right; font-size: .82rem; font-variant-numeric: tabular-nums; }
+.team-row:first-child .team-line { color: var(--orange); font-weight: 850; }
+.game-card.live .team-score { color: var(--green); }
+.game-card.final .team-score { color: var(--blue); }
+.game-status-panel { align-self: stretch; display: flex; flex-direction: column; justify-content: center; padding: 0 22px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+.status-line { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; font-size: .82rem; font-weight: 850; }
+.status-line .status-dot { width: 9px; height: 9px; }
+.line-comparison { display: grid; gap: 7px; color: var(--muted); font-size: .8rem; line-height: 1.35; }
+.market-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.market-line strong { color: var(--ink); text-align: right; font-weight: 850; }
+.status-detail { color: var(--muted); font-size: .8rem; line-height: 1.4; }
+.tiebreaker-prompt { margin-top: 8px; }
+.event-link { display: inline-block; margin-top: 9px; color: var(--blue); font-size: .75rem; font-weight: 750; text-decoration: none; }
+.event-link:hover { text-decoration: underline; }
+
+.pick-panel { display: grid; gap: 10px; }
+.pick-label { color: var(--muted); font-size: .73rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.pick-select, .score-input { width: 100%; padding: 10px 11px; border: 1px solid #cbd5e3; border-radius: 9px; color: var(--ink); background: white; }
+.pick-select:focus, .score-input:focus, input[type="date"]:focus { outline: 3px solid rgba(47,111,237,.16); border-color: var(--blue); }
+.pick-result { min-height: 24px; display: flex; align-items: center; justify-content: space-between; gap: 9px; padding-top: 2px; color: var(--muted); font-size: .79rem; }
+.result-pill { padding: 5px 8px; border-radius: 6px; font-size: .72rem; font-weight: 900; letter-spacing: .03em; text-transform: uppercase; }
+.result-pill.cover { color: #14724c; background: var(--green-soft); }
+.result-pill.loss { color: #a43c3c; background: var(--red-soft); }
+.result-pill.push { color: #8a6512; background: var(--yellow-soft); }
+.result-pill.wait { color: #586a80; background: #f0f4f8; }
+.result-margin { text-align: right; font-variant-numeric: tabular-nums; }
+.tiebreaker-entry { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.score-input-wrap { display: grid; gap: 4px; }
+.score-input-wrap span { color: var(--muted); font-size: .68rem; font-weight: 750; }
+.tiebreaker-note { color: var(--muted); font-size: .74rem; line-height: 1.35; }
+.actual-score { color: var(--blue); font-weight: 800; }
+
+.footer-note { display: flex; justify-content: space-between; gap: 18px; margin-top: 20px; padding: 0 4px; color: #8794a5; font-size: .74rem; }
+
+@media (max-width: 900px) {
+  .game-card { grid-template-columns: 1fr 1fr; }
+  .game-status-panel { padding: 12px 0 0; border-top: 1px solid var(--line); border-right: 0; border-left: 0; }
+  .pick-panel { grid-column: 1 / -1; }
+}
+
+@media (max-width: 650px) {
+  .app-shell { width: min(100% - 20px, 560px); padding-top: 18px; }
+  .hero { align-items: flex-start; padding: 26px 23px; border-radius: 18px; }
+  .hero-badge { min-width: 76px; padding: 12px 10px; }
+  .hero-badge-number { font-size: 1.5rem; }
+  .controls-panel { align-items: stretch; flex-direction: column; padding: 16px; }
+  .control-actions { justify-content: space-between; }
+  .summary-grid { grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 28px; }
+  .summary-card { min-height: 86px; padding: 14px; }
+  .summary-card strong { font-size: 1.4rem; }
+  .section-heading { align-items: flex-start; flex-direction: column; }
+  .status-key { flex-wrap: wrap; }
+  .game-card { grid-template-columns: 1fr; gap: 15px; padding: 17px; }
+  .game-status-panel { grid-column: auto; padding: 13px 0 0; }
+  .pick-panel { grid-column: auto; }
+  .footer-note { flex-direction: column; gap: 5px; }
+}
+
+    </style>
   </head>
   <body>
     <main class="app-shell">
@@ -23,8 +245,8 @@
       <section class="controls-panel" aria-label="Scoreboard controls">
         <div class="control-group">
           <label for="score-date">Scoreboard date</label>
-          <input id="score-date" type="date" value="2026-10-03" />
-          <span class="help-text">This week’s slate runs October 2–3.</span>
+          <input id="score-date" type="date" value="2026-10-10" />
+          <span class="help-text">This week’s slate runs October 9–10.</span>
         </div>
         <div class="control-actions">
           <label class="toggle">
@@ -60,7 +282,7 @@
 
       <div class="section-heading">
         <div>
-          <p class="eyebrow">Your weekly slate</p>
+          <p class="eyebrow">Week of Oct 10, 2026</p>
           <h2>Games &amp; lines</h2>
         </div>
         <div class="status-key" aria-label="Status key">
@@ -78,6 +300,410 @@
         <span>Lines and picks stay saved in this browser</span>
       </footer>
     </main>
-    <script src="app.js?v=20261003"></script>
+    <script id="app-code">
+const GAMES = [
+  { id: "florida-state-louisville", away: "Florida State", home: "Louisville", spread: 5.5, network: "ESPN" },
+  { id: "iowa-washington", away: "Iowa", home: "Washington", spread: 1.5, network: "FOX" },
+  { id: "iowa-state-byu", away: "Iowa State", home: "BYU", spread: 12.5, network: "ESPN" },
+  { id: "indiana-nebraska", away: "Indiana", home: "Nebraska", spread: -8.5, network: "FOX" },
+  { id: "wake-forest-nc-state", away: "Wake Forest", home: "NC State", spread: -7.5, network: "The CW" },
+  { id: "arizona-west-virginia", away: "Arizona", home: "West Virginia", spread: -6.5, network: "TNT" },
+  { id: "texas-oklahoma", away: "Texas", home: "Oklahoma", spread: -10.5, network: "ABC", neutral: true, venue: "State Fair of Texas" },
+  { id: "ucla-oregon", away: "UCLA", home: "Oregon", spread: 12.5, network: "CBS" },
+  { id: "houston-kansas-state", away: "Houston", home: "Kansas State", spread: 0, network: "FOX" },
+  { id: "duke-georgia-tech", away: "Duke", home: "Georgia Tech", spread: -9.5, network: "ESPN2" },
+  { id: "lsu-kentucky", away: "LSU", home: "Kentucky", spread: -12.5, network: "ESPN", tiebreaker: true },
+  { id: "north-dakota-state-unlv", away: "North Dakota State", home: "UNLV", spread: -6.5, network: "The CW" },
+  { id: "georgia-alabama", away: "Georgia", home: "Alabama", spread: 0, network: "ABC" },
+  { id: "usc-penn-state", away: "USC", home: "Penn State", spread: 2.5, network: "NBC" },
+  { id: "boise-state-fresno-state", away: "Boise State", home: "Fresno State", spread: -7.5, network: "The CW" },
+];
+
+const STORAGE_KEY = "college-football-picks-week-6-2026-v1";
+const DATE_STORAGE_KEY = "college-football-date-week-6-2026";
+const DEFAULT_DATE = "2026-10-10";
+const state = {
+  scores: new Map(),
+  picks: loadSavedPicks(),
+  date: localStorage.getItem(DATE_STORAGE_KEY) || DEFAULT_DATE,
+  refreshing: false,
+};
+
+const elements = {
+  date: document.querySelector("#score-date"),
+  autoRefresh: document.querySelector("#auto-refresh"),
+  refresh: document.querySelector("#refresh-button"),
+  gameList: document.querySelector("#game-list"),
+  message: document.querySelector("#message"),
+  picksEntered: document.querySelector("#picks-entered"),
+  atsRecord: document.querySelector("#ats-record"),
+  liveCount: document.querySelector("#live-count"),
+  lastUpdated: document.querySelector("#last-updated"),
+  heroGameCount: document.querySelector("#hero-game-count"),
+};
+
+elements.heroGameCount.textContent = GAMES.length;
+elements.date.value = state.date;
+
+function loadSavedPicks() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function savePicks() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.picks));
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function formatSpread(value) {
+  if (value === 0) return "PK";
+  return `${value > 0 ? "+" : ""}${value}`;
+}
+
+function formatVegasLine(game, score) {
+  const raw = String(score?.vegasLine || "").trim();
+  if (!raw) return "Not posted yet";
+  const spreadMatch = raw.match(/[+-]?\d+(?:\.\d+)?/);
+  if (!spreadMatch) return raw;
+
+  const rawSpread = Number.isFinite(score?.vegasSpread) ? score.vegasSpread : Number(spreadMatch[0]);
+  const magnitude = Math.abs(rawSpread);
+  const homeFavorite = score?.vegasHomeFavorite;
+  const awaySpread = homeFavorite === true || (homeFavorite == null && game.spread > 0)
+    ? magnitude
+    : homeFavorite === false || (homeFavorite == null && game.spread < 0)
+      ? -magnitude
+      : teamMatches(game.home, raw) && !teamMatches(game.away, raw)
+        ? -Number(spreadMatch[0])
+        : Number(spreadMatch[0]);
+  return `${game.away} ${formatSpread(awaySpread)}`;
+}
+
+function formatTime(value) {
+  if (!value) return "Not yet";
+  return new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(value);
+}
+
+function formatGameDateTime(value) {
+  if (!value) return "Time not posted";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Kickoff time unavailable";
+  const formatDate = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "America/New_York",
+  }).format(date);
+  const formatTime = (timeZone, zone) => {
+    const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+      timeZone,
+    }).formatToParts(date).filter(({ type }) => type !== "literal").map(({ type, value: part }) => [type, part]));
+    const minutes = parts.minute === "00" ? "" : `:${parts.minute}`;
+    return `${parts.hour}${minutes} ${zone}`;
+  };
+  return `${formatDate} ${formatTime("America/New_York", "ET")} / ${formatTime("America/Chicago", "CT")}`;
+}
+
+function formatMargin(value) {
+  const rounded = Math.round(Math.abs(value) * 2) / 2;
+  return `${rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)} pts`;
+}
+
+function normalize(value) {
+  return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+const aliases = {
+  Miami: ["Miami Hurricanes", "Miami (FL)"],
+  UGA: ["Georgia", "Georgia Bulldogs"],
+  UNC: ["North Carolina", "North Carolina Tar Heels"],
+  Mizzou: ["Missouri", "Missouri Tigers"],
+  USC: ["Southern California", "USC Trojans"],
+  Cal: ["California", "California Golden Bears"],
+  "East Carolina": ["East Carolina Pirates"],
+  "Boston College": ["Boston College Eagles", "BC"],
+  Pitt: ["Pittsburgh", "Pittsburgh Panthers"],
+  "Colorado St": ["Colorado State", "Colorado State Rams"],
+  "Ole Miss": ["Mississippi", "Ole Miss Rebels"],
+  SMU: ["Southern Methodist", "SMU Mustangs"],
+  "McNeese State": ["McNeese", "McNeese Cowboys", "McNeese State Cowboys"],
+  Hawaii: ["Hawai'i", "Hawai'i Rainbow Warriors", "Hawaii Rainbow Warriors"],
+  Washington: ["Washington Huskies"],
+  "Washington State": ["Washington State Cougars"],
+};
+
+const seedTeamNames = [...new Set(GAMES.flatMap((game) => [game.away, game.home]))];
+
+function teamMatches(expected, actual) {
+  const actualName = normalize(actual);
+  if (!actualName) return false;
+  const expectedName = normalize(expected);
+  const aliasGroups = Object.entries(aliases).map(([name, names]) => [name, ...names].map(normalize));
+  const candidates = [...new Set([
+    expectedName,
+    ...aliasGroups.filter((names) => names.includes(expectedName)).flat(),
+  ])].filter(Boolean);
+  const otherTeams = [...seedTeamNames.map(normalize), ...aliasGroups.flat()]
+    .filter((name) => !candidates.includes(name));
+  return candidates.some((candidate) => {
+    if (actualName === candidate) return true;
+    const longerTeamPrefix = otherTeams
+      .some((other) => other.startsWith(candidate) && actualName.startsWith(other));
+    return !longerTeamPrefix && (actualName.includes(candidate) || candidate.includes(actualName));
+  });
+}
+
+function findTeamIndex(expected, competitors) {
+  return competitors.findIndex((item) => teamMatches(expected, item.team?.displayName || item.team?.shortDisplayName));
+}
+
+function gameLine(game) {
+  return {
+    away: formatSpread(game.spread),
+    home: formatSpread(-game.spread),
+  };
+}
+
+function getPick(game) {
+  return state.picks[game.id] || { side: "none", awayScore: "", homeScore: "" };
+}
+
+function renderGames() {
+  elements.gameList.innerHTML = GAMES.map((game) => renderGame(game)).join("");
+  bindGameInputs();
+  renderSummary();
+}
+
+function renderGame(game) {
+  const pick = getPick(game);
+  const score = state.scores.get(game.id);
+  const lines = gameLine(game);
+  const statusState = score?.state || "unknown";
+  const statusClass = statusState === "in" ? "live" : statusState === "post" ? "final" : "upcoming";
+  const statusText = statusState === "pre"
+    ? "Upcoming"
+    : score?.shortDetail || (statusState === "unknown" ? "No score found" : "Scheduled");
+  const awayScore = score?.awayScore ?? "—";
+  const homeScore = score?.homeScore ?? "—";
+  const result = calculateResult(game, score, pick);
+  const tiebreakerScore = game.tiebreaker ? renderTiebreaker(game, score, pick) : "";
+  const kickoff = formatGameDateTime(score?.eventDate);
+  const vegasLine = formatVegasLine(game, score);
+
+  return `
+    <article class="game-card ${statusClass} ${game.tiebreaker ? "tiebreaker" : ""}" data-game-id="${game.id}">
+      <div class="game-info">
+        <div class="game-meta">
+          <span class="network">${escapeHtml(game.network)}</span>
+          ${game.neutral ? `<span class="network">• Neutral site${game.venue ? ` · ${escapeHtml(game.venue)}` : ""}</span>` : ""}
+          ${game.tiebreaker ? '<span class="tiebreaker-label">Full-score tiebreaker</span>' : ""}
+        </div>
+        <div class="teams">
+          <div class="team-row">
+            <span class="team-name">${escapeHtml(game.away)}</span>
+            <span class="team-role">${game.neutral ? "" : "Away"}</span>
+            <strong class="team-score">${escapeHtml(awayScore)}</strong>
+            <span class="team-line">${escapeHtml(lines.away)}</span>
+          </div>
+          <div class="team-row">
+            <span class="team-name">${escapeHtml(game.home)}</span>
+            <span class="team-role">${game.neutral ? "" : "Home"}</span>
+            <strong class="team-score">${escapeHtml(homeScore)}</strong>
+            <span class="team-line">${escapeHtml(lines.home)}</span>
+          </div>
+        </div>
+      </div>
+      <div class="game-status-panel">
+        <div class="status-line"><i class="status-dot ${statusState === "in" ? "live-dot" : statusState === "post" ? "final-dot" : "upcoming-dot"}"></i>${escapeHtml(statusText)}</div>
+        <div class="game-time status-time">${escapeHtml(kickoff)}</div>
+        <div class="line-comparison">
+          <div class="market-line"><span>Tommy line</span><strong>${escapeHtml(game.away)} ${escapeHtml(lines.away)}</strong></div>
+          <div class="market-line"><span>Vegas line (ESPN)</span><strong>${escapeHtml(vegasLine)}</strong></div>
+        </div>
+        ${game.tiebreaker ? '<div class="status-detail tiebreaker-prompt">Enter the predicted final score below.</div>' : ""}
+        ${score?.link ? `<a class="event-link" href="${escapeHtml(score.link)}" target="_blank" rel="noreferrer">Open ESPN game ↗</a>` : ""}
+      </div>
+      <div class="pick-panel">
+        <label class="pick-label" for="pick-${game.id}">${game.tiebreaker ? "ATS pick (optional)" : "My pick"}</label>
+        <select class="pick-select" id="pick-${game.id}" data-pick-id="${game.id}">
+          <option value="none" ${pick.side === "none" ? "selected" : ""}>Select a team</option>
+          <option value="away" ${pick.side === "away" ? "selected" : ""}>${escapeHtml(game.away)} (${escapeHtml(lines.away)})</option>
+          <option value="home" ${pick.side === "home" ? "selected" : ""}>${escapeHtml(game.home)} (${escapeHtml(lines.home)})</option>
+        </select>
+        ${tiebreakerScore}
+        <div class="pick-result">${result.html}</div>
+      </div>
+    </article>
+  `;
+}
+
+function renderTiebreaker(game, score, pick) {
+  const actual = score?.awayScore != null && score?.homeScore != null
+    ? `<span class="actual-score">Actual: ${escapeHtml(score.awayScore)}–${escapeHtml(score.homeScore)}</span>`
+    : "";
+  return `
+    <div class="tiebreaker-entry">
+      <label class="score-input-wrap"><span>${escapeHtml(game.away)} score</span><input class="score-input" type="number" min="0" max="100" inputmode="numeric" placeholder="0" value="${escapeHtml(pick.awayScore)}" data-score-id="${game.id}" data-score-side="away" /></label>
+      <label class="score-input-wrap"><span>${escapeHtml(game.home)} score</span><input class="score-input" type="number" min="0" max="100" inputmode="numeric" placeholder="0" value="${escapeHtml(pick.homeScore)}" data-score-id="${game.id}" data-score-side="home" /></label>
+    </div>
+    <div class="tiebreaker-note">Weekly tiebreaker: enter your predicted final score. ${actual}</div>
+  `;
+}
+
+function calculateResult(game, score, pick) {
+  if (pick.side === "none") return { html: '<span class="result-pill wait">Pick not set</span>' };
+  if (!score || score.awayScore == null || score.homeScore == null || score.state === "pre") {
+    return { html: '<span class="result-pill wait">Waiting for score</span>' };
+  }
+  const awayScore = Number(score.awayScore);
+  const homeScore = Number(score.homeScore);
+  const awayCoverMargin = awayScore + game.spread - homeScore;
+  const coverMargin = pick.side === "away" ? awayCoverMargin : -awayCoverMargin;
+  const isPush = coverMargin === 0;
+  const isCover = coverMargin > 0;
+  const live = score.state === "in";
+  const label = isPush ? (live ? "Pushing" : "Push vs spread") : isCover ? (live ? "Covering" : "Win vs spread") : (live ? "Not covering" : "Loss vs spread");
+  const klass = isPush ? "push" : isCover ? "cover" : "loss";
+  const marginText = isPush ? "Even with the line" : `${isCover ? "Ahead" : "Behind"} by ${formatMargin(coverMargin)}`;
+  return { html: `<span class="result-pill ${klass}">${label}</span><span class="result-margin">${marginText}</span>`, result: isPush ? "push" : isCover ? "win" : "loss" };
+}
+
+function bindGameInputs() {
+  document.querySelectorAll("[data-pick-id]").forEach((select) => {
+    select.addEventListener("change", (event) => {
+      const gameId = event.target.dataset.pickId;
+      const current = getPick(GAMES.find((game) => game.id === gameId));
+      state.picks[gameId] = { ...current, side: event.target.value };
+      savePicks();
+      renderGames();
+    });
+  });
+  document.querySelectorAll("[data-score-id]").forEach((input) => {
+    input.addEventListener("input", (event) => {
+      const gameId = event.target.dataset.scoreId;
+      const side = event.target.dataset.scoreSide;
+      const current = getPick(GAMES.find((game) => game.id === gameId));
+      state.picks[gameId] = { ...current, [`${side}Score`]: event.target.value };
+      savePicks();
+      renderSummary();
+    });
+  });
+}
+
+function renderSummary() {
+  const picks = GAMES.map(getPick);
+  const entered = picks.filter((pick) => pick.side !== "none").length;
+  const results = GAMES.map((game) => calculateResult(game, state.scores.get(game.id), getPick(game)).result).filter(Boolean);
+  const wins = results.filter((result) => result === "win").length;
+  const losses = results.filter((result) => result === "loss").length;
+  const pushes = results.filter((result) => result === "push").length;
+  const live = [...state.scores.values()].filter((score) => score.state === "in").length;
+  elements.picksEntered.textContent = `${entered} / ${GAMES.length}`;
+  elements.atsRecord.textContent = results.length ? `${wins}-${losses}${pushes ? `-${pushes}` : ""}` : "—";
+  elements.liveCount.textContent = live;
+}
+
+function setMessage(message, error = false) {
+  elements.message.textContent = message;
+  elements.message.className = error ? "message error" : "message";
+}
+
+function dateParts(dateString, delta) {
+  const date = new Date(`${dateString}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + delta);
+  return date.toISOString().slice(0, 10).replaceAll("-", "");
+}
+
+async function fetchScoreboard(dateString) {
+  const dates = [-3, -2, -1, 0, 1, 2, 3].map((delta) => dateParts(dateString, delta));
+  const urls = dates.map((date) => `https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=${date}&groups=80&limit=500`);
+  const responses = await Promise.all(urls.map((url) => fetch(url)));
+  if (responses.some((response) => !response.ok)) throw new Error("The live score service returned an error.");
+  const payloads = await Promise.all(responses.map((response) => response.json()));
+  const events = payloads.flatMap((payload) => payload.events || []);
+  const unique = new Map(events.map((event) => [event.id, event]));
+  return GAMES.reduce((matches, game) => {
+    const event = [...unique.values()].find((candidate) => {
+      const competitors = candidate.competitions?.[0]?.competitors || [];
+      const awayIndex = findTeamIndex(game.away, competitors);
+      const homeIndex = findTeamIndex(game.home, competitors);
+      return awayIndex >= 0 && homeIndex >= 0 && awayIndex !== homeIndex;
+    });
+    if (!event) return matches;
+    const competition = event.competitions?.[0] || {};
+    const competitors = competition.competitors || [];
+    const away = competitors[findTeamIndex(game.away, competitors)];
+    const home = competitors[findTeamIndex(game.home, competitors)];
+    const type = event.status?.type || {};
+    const odds = competition.odds?.[0] || {};
+    matches.set(game.id, {
+      state: type.state || "pre",
+      shortDetail: type.shortDetail || type.detail || "Scheduled",
+      awayScore: parseScore(away?.score),
+      homeScore: parseScore(home?.score),
+      link: event.links?.[0]?.href || "",
+      eventDate: event.date,
+      vegasLine: String(odds.details || "").trim(),
+      vegasSpread: Number.isFinite(Number(odds.spread)) ? Number(odds.spread) : null,
+      vegasHomeFavorite: typeof odds.homeTeamOdds?.favorite === "boolean" ? odds.homeTeamOdds.favorite : null,
+    });
+    return matches;
+  }, new Map());
+}
+
+function parseScore(score) {
+  if (score == null || score === "") return null;
+  const number = Number(score);
+  return Number.isFinite(number) ? number : null;
+}
+
+async function refreshScores() {
+  if (state.refreshing) return;
+  state.refreshing = true;
+  elements.refresh.disabled = true;
+  setMessage("Refreshing scores…");
+  try {
+    state.scores = await fetchScoreboard(state.date);
+    renderGames();
+    const matched = state.scores.size;
+    elements.lastUpdated.textContent = formatTime(new Date());
+    setMessage(matched ? `Found ${matched} of ${GAMES.length} games around the selected date.` : "No matching games found around the selected date. Try changing the scoreboard date.");
+  } catch (error) {
+    setMessage(`${error.message} Check your connection and try again.`, true);
+  } finally {
+    state.refreshing = false;
+    elements.refresh.disabled = false;
+  }
+}
+
+elements.date.addEventListener("change", () => {
+  state.date = elements.date.value || DEFAULT_DATE;
+  localStorage.setItem(DATE_STORAGE_KEY, state.date);
+  state.scores = new Map();
+  renderGames();
+  refreshScores();
+});
+elements.refresh.addEventListener("click", refreshScores);
+setInterval(() => {
+  if (elements.autoRefresh.checked) refreshScores();
+}, 30000);
+
+renderGames();
+refreshScores();
+
+    </script>
   </body>
 </html>

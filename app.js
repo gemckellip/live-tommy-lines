@@ -1,24 +1,24 @@
 const GAMES = [
-  { id: "pitt-virginia-tech", away: "Pitt", home: "Virginia Tech", spread: 4.5, network: "ESPN" },
-  { id: "penn-state-northwestern", away: "Penn State", home: "Northwestern", spread: -3.5, network: "FOX" },
-  { id: "notre-dame-north-carolina", away: "Notre Dame", home: "North Carolina", spread: -25.5, network: "ESPN" },
-  { id: "alabama-mississippi-state", away: "Alabama", home: "Mississippi State", spread: -4.5, network: "ABC" },
-  { id: "ucf-houston", away: "UCF", home: "Houston", spread: 11.5, network: "ESPN2" },
-  { id: "navy-air-force", away: "Navy", home: "Air Force", spread: 0, network: "CBS" },
-  { id: "michigan-minnesota", away: "Michigan", home: "Minnesota", spread: -6.5, network: "FOX" },
-  { id: "ohio-state-iowa", away: "Ohio State", home: "Iowa", spread: -12.5, network: "CBS" },
-  { id: "florida-missouri", away: "Florida", home: "Missouri", spread: -10.5, network: "ABC" },
-  { id: "auburn-tennessee", away: "Auburn", home: "Tennessee", spread: 7.5, network: "ESPN" },
-  { id: "byu-tcu", away: "BYU", home: "TCU", spread: -8.5, network: "ESPN" },
-  { id: "miami-clemson", away: "Miami", home: "Clemson", spread: -17.5, network: "ABC" },
-  { id: "mcneese-state-lsu", away: "McNeese State", home: "LSU", spread: 51.5, network: "SEC Network", tiebreaker: true },
-  { id: "cincinnati-arizona", away: "Cincinnati", home: "Arizona", spread: 6.5, network: "FOX" },
-  { id: "san-jose-state-hawaii", away: "San Jose State", home: "Hawaii", spread: 4.5, network: "MW+" },
+  { id: "florida-state-louisville", away: "Florida State", home: "Louisville", spread: 5.5, network: "ESPN" },
+  { id: "iowa-washington", away: "Iowa", home: "Washington", spread: 1.5, network: "FOX" },
+  { id: "iowa-state-byu", away: "Iowa State", home: "BYU", spread: 12.5, network: "ESPN" },
+  { id: "indiana-nebraska", away: "Indiana", home: "Nebraska", spread: -8.5, network: "FOX" },
+  { id: "wake-forest-nc-state", away: "Wake Forest", home: "NC State", spread: -7.5, network: "The CW" },
+  { id: "arizona-west-virginia", away: "Arizona", home: "West Virginia", spread: -6.5, network: "TNT" },
+  { id: "texas-oklahoma", away: "Texas", home: "Oklahoma", spread: -10.5, network: "ABC", neutral: true, venue: "State Fair of Texas" },
+  { id: "ucla-oregon", away: "UCLA", home: "Oregon", spread: 12.5, network: "CBS" },
+  { id: "houston-kansas-state", away: "Houston", home: "Kansas State", spread: 0, network: "FOX" },
+  { id: "duke-georgia-tech", away: "Duke", home: "Georgia Tech", spread: -9.5, network: "ESPN2" },
+  { id: "lsu-kentucky", away: "LSU", home: "Kentucky", spread: -12.5, network: "ESPN", tiebreaker: true },
+  { id: "north-dakota-state-unlv", away: "North Dakota State", home: "UNLV", spread: -6.5, network: "The CW" },
+  { id: "georgia-alabama", away: "Georgia", home: "Alabama", spread: 0, network: "ABC" },
+  { id: "usc-penn-state", away: "USC", home: "Penn State", spread: 2.5, network: "NBC" },
+  { id: "boise-state-fresno-state", away: "Boise State", home: "Fresno State", spread: -7.5, network: "The CW" },
 ];
 
-const STORAGE_KEY = "college-football-picks-week-5-2026-v1";
-const DATE_STORAGE_KEY = "college-football-date-week-5-2026";
-const DEFAULT_DATE = "2026-10-03";
+const STORAGE_KEY = "college-football-picks-week-6-2026-v1";
+const DATE_STORAGE_KEY = "college-football-date-week-6-2026";
+const DEFAULT_DATE = "2026-10-10";
 const state = {
   scores: new Map(),
   picks: loadSavedPicks(),
