@@ -3,7 +3,7 @@ setlocal EnableExtensions
 cd /d "%~dp0"
 
 echo.
-echo Starting Live Tommy Lines for the week of October 10...
+echo Starting Live Tommy Lines for the week of November 21...
 echo Keep this window open while using the app.
 echo.
 

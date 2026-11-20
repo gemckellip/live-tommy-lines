@@ -1,27 +1,23 @@
-# College Football Picks
+# Live Tommy Lines — Week of November 21, 2026
 
-A small browser app for tracking college football scores, betting lines, and personal picks.
-
-## Run it
-
-Extract this download into a new folder. On Windows, double-click `start-app.bat`. It opens the current app in your browser and serves this extracted folder on an available local port. Keep the command window open while using the app.
-
-```bash
-python3 start-app.py
-```
-
-The browser opens automatically. If the launcher reports that Python is missing, install Python and rerun it.
+The 15 games and Tommy lines from the supplied screenshot are preloaded in order. LSU at Tennessee is the full-score tiebreaker. The scoreboard date starts at November 21; the automatic score search also includes Central Michigan at Buffalo on November 18 and New Mexico at Wyoming on November 20.
 
 ## Update GitHub Pages
 
-Upload `index.html` from this download to the repository root, replace the existing `index.html`, and commit to main. The page contains its own game list, JavaScript, and styles. Wait for the Pages deployment to finish, then refresh the site with Ctrl+F5. The board should say “Week of Oct 10, 2026” and start with Florida State at Louisville.
+Extract this ZIP into a new folder. Upload its `index.html` to your repository root, replacing the old `index.html`, and commit to main. After the Pages deployment finishes, press Ctrl+F5. The page should say “Week of Nov 21, 2026” and begin with Central Michigan at Buffalo.
 
-`app.js` and `styles.css` are retained as editable sources. After editing them for a later week, run `python3 build-app.py` to rebuild the self-contained `index.html` before uploading it.
+The page contains all its styles and game code, so uploading `index.html` is sufficient.
 
-The app uses ESPN's public college-football scoreboard endpoint for live scores and ESPN's available odds record for the Vegas line. The selected date searches three days before and after, which accommodates a Friday/Saturday slate.
+## Run locally
 
-## Included slate
+On Windows, double-click `start-app.bat`. It opens this extracted folder's app on an available local port. Keep the command window open while using the app. Python must be installed.
 
-The 15 games from the supplied screenshot are preloaded. Picks are intentionally blank. The LSU–Kentucky game is marked as the weekly full-score tiebreaker and has fields for a predicted final score. Texas–Oklahoma is shown as a neutral-site game at the State Fair of Texas. The default date is October 10, 2026, and the score search covers three days before and after the selected date so the October 9–10 slate is included. Each week's picks and scoreboard date are saved separately.
+On other computers, run `python3 start-app.py`.
 
-Lines are entered as the Tommy line for the first-listed team. The app automatically displays the corresponding line for the second team, keeps ESPN's Vegas spread value, and shows that Vegas value using the away team—the same school shown for the Tommy line—while calculating live/final ATS status.
+## Features
+
+ESPN live scores refresh every 30 seconds. Tommy lines use the first-listed team's spread. The ESPN Vegas line displays that same team with ESPN's spread, and ATS results use the Tommy line. Kickoff times appear once in Eastern and Central time. Picks are saved in this browser separately for each weekly slate.
+
+## Updating source files
+
+`app.js` and `styles.css` are editable sources. After editing them, run `python3 build-app.py` to rebuild the self-contained `index.html` before uploading it.

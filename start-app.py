@@ -22,8 +22,8 @@ def create_server():
 
 def main():
     with create_server() as server:
-        url = f"http://127.0.0.1:{server.server_port}/index.html?week=2026-10-10-r2"
-        print(f"Live Tommy Lines - week of October 10, 2026\n{url}", flush=True)
+        url = f"http://127.0.0.1:{server.server_port}/index.html?week=2026-11-21"
+        print(f"Live Tommy Lines - week of November 21, 2026\n{url}", flush=True)
         print("Keep this window open. Press Ctrl+C to stop.", flush=True)
         Timer(0.5, lambda: webbrowser.open(url)).start()
         try:
